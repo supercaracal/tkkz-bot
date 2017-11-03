@@ -2,9 +2,9 @@ FROM node:latest
 
 MAINTAINER Takakazu Abe <tkkz@hatten.ba>
 
-ENV REPOSITORY_URL=""
-ENV BRANCH="master"
-ENV WORK_PLACE="/opt/tkkz-bot"
+ARG REPOSITORY_URL=""
+ARG BRANCH="master"
+ARG WORK_PLACE="/opt/tkkz-bot"
 
 RUN apt-get install -y git && rm -rf /var/lib/apt/lists/*
 

@@ -5,13 +5,14 @@ services:
     image: "redis"
     restart: "always"
   hubot:
-    build: "./docker/hubot"
+    build:
+      context: "./docker/hubot"
+      args:
+        - "REPOSITORY_URL=https://github.com/supercaracal/tkkz-bot.git"
     depends_on:
       - "brain"
     restart: "always"
     environment:
-      - "REPOSITORY_URL=https://github.com/supercaracal/tkkz-bot.git"
-      - "BRANCH=master"
       - "REDIS_URL=redis://${brain}:6379/hubot"
       - "HUBOT_SLACK_TOKEN=${HUBOT_SLACK_TOKEN}"
       - "HUBOT_GOOGLE_CSE_KEY=${HUBOT_GOOGLE_CSE_KEY}"
