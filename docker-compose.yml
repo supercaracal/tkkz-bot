@@ -13,7 +13,7 @@ services:
       - "brain"
     restart: "always"
     environment:
-      - "REDIS_URL=redis://${brain}:6379/hubot"
+      - "REDIS_URL=redis://brain:6379/hubot"
       - "HUBOT_SLACK_TOKEN=${HUBOT_SLACK_TOKEN}"
       - "HUBOT_GOOGLE_CSE_KEY=${HUBOT_GOOGLE_CSE_KEY}"
       - "HUBOT_GOOGLE_CSE_ID=${HUBOT_GOOGLE_CSE_ID}"
