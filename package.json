@@ -1,0 +1,20 @@
+{
+  "name": "tkkz",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Takakazu Abe <tkkz@hatten.ba>",
+  "description": "Wanna try?",
+  "dependencies": {
+    "hubot": "*",
+    "hubot-slack": "*",
+    "hubot-help": "*",
+    "hubot-rules": "*",
+    "hubot-redis-brain": "*",
+    "hubot-diagnostics": "*",
+    "hubot-scripts": "*",
+    "hubot-google-images": "*"
+  },
+  "engines": {
+    "node": "*"
+  }
+}
