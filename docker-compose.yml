@@ -2,16 +2,17 @@
 version: "3"
 services:
   brain:
-    image: "redis"
+    build: "docker/brain"
     restart: "always"
+    volumes:
+      - "${SRC_DIR}/data:/data"
   hubot:
-    build:
-      context: "./docker/hubot"
-      args:
-        - "REPOSITORY_URL=https://github.com/supercaracal/tkkz-bot.git"
+    build: "docker/hubot"
+    restart: "always"
     depends_on:
       - "brain"
-    restart: "always"
+    volumes:
+      - "${SRC_DIR}:/opt/tkkz-bot"
     environment:
       - "REDIS_URL=redis://brain:6379/hubot"
       - "HUBOT_SLACK_TOKEN=${HUBOT_SLACK_TOKEN}"
