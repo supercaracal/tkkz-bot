@@ -12,9 +12,14 @@
     "hubot-redis-brain": "*",
     "hubot-diagnostics": "*",
     "hubot-scripts": "*",
-    "hubot-google-images": "*"
+    "hubot-google-images": "*",
+    "@types/node": "*",
+    "@types/hubot": "*"
   },
   "engines": {
     "node": "*"
+  },
+  "scripts": {
+    "build": "tsc"
   }
 }
