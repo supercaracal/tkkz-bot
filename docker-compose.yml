@@ -2,7 +2,7 @@
 version: "3"
 services:
   brain:
-    build: "docker/brain"
+    image: "supercaracal/neural-redis-docker:latest"
     restart: "always"
     volumes:
       - "${SRC_DIR}/data:/data"
