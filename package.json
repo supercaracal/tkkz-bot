@@ -13,6 +13,7 @@
     "hubot-diagnostics": "*",
     "hubot-scripts": "*",
     "hubot-google-images": "*",
+    "typescript": "*",
     "@types/node": "*",
     "@types/hubot": "*"
   },
