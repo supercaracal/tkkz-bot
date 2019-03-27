@@ -11,6 +11,9 @@ Wanna try?
 
 ```
 $ docker-compose up
+$ docker-compose exec hubot /bin/bash
+# cd /opt/tkkz-bot
+# bin/hubot
 ```
 
 ## Links
