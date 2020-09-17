@@ -1,7 +1,2 @@
-node_modules
-data
-scripts/*.js
-.DS_Store*
-.hubot_history
 .env
-package-lock.json
+tkkz-bot

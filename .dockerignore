@@ -1,0 +1,10 @@
+.git
+.github
+tkkz-bot
+.dockerignore
+.env
+.env.sample
+.gitignore
+Dockerfile
+Makefile
+README.md
