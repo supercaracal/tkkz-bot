@@ -1,4 +1,4 @@
-tkkz-bot ![](https://github.com/supercaracal/tkkz-bot/workflows/Test/badge.svg?branch=master)
+tkkz-bot ![](https://github.com/supercaracal/tkkz-bot/workflows/Test/badge.svg?branch=master) ![](https://github.com/supercaracal/tkkz-bot/workflows/Docker/badge.svg)
 =================
 
 Wanna try?
