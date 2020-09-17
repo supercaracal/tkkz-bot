@@ -1,4 +1,4 @@
-module infra
+module tkkz-bot
 
 go 1.15
 
