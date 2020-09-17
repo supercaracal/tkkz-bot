@@ -43,14 +43,14 @@ func (s *MySlack) startEventLoop() {
 		case *slack.MessageEvent:
 			s.handleMessageEvent(ev)
 		case *slack.RTMError:
-			reply := fmt.Sprintf("CODE=%d %s\n", ev.Code, ev.Error())
+			reply := fmt.Sprintf("CODE=%d %s", ev.Code, ev.Error())
 			s.handlers["onMessagingError"](reply)
 		case *slack.InvalidAuthEvent:
 			s.handlers["onAuthenticationError"]("Invalid Slack token")
 		case *slack.ConnectedEvent:
 			s.handlers["onConnected"]("Connected to Slack")
 		case *slack.DisconnectedEvent:
-			reply := fmt.Sprintf("Disconnected from Slack: intentionally=%t %s\n", ev.Intentional, ev.Cause.Error())
+			reply := fmt.Sprintf("Disconnected from Slack: intentionally=%t %s", ev.Intentional, ev.Cause.Error())
 			s.handlers["onDisconnected"](reply)
 		default:
 			continue
