@@ -1,4 +1,5 @@
-# tkkz-bot
+tkkz-bot ![](https://github.com/supercaracal/tkkz-bot/workflows/Test/badge.svg?branch=master)
+=================
 
 Wanna try?
 
