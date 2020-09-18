@@ -1,10 +1,10 @@
-module tkkz-bot
+module github.com/supercaracal/tkkz-bot
 
 go 1.15
 
 require (
 	github.com/joho/godotenv v1.3.0
-	github.com/supercaracal/tkkz-bot/infra v0.0.0-00010101000000-000000000000
+	github.com/slack-go/slack v0.6.6
 )
 
 replace github.com/supercaracal/tkkz-bot/infra => ./infra
