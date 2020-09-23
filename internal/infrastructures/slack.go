@@ -1,4 +1,4 @@
-package infra
+package infrastructures
 
 import (
 	"fmt"
@@ -12,6 +12,22 @@ import (
 type MySlack struct {
 	rtm      *slack.RTM
 	handlers map[string]func(string) string
+}
+
+// NewSlackClient is
+func NewSlackClient(token string, verbose bool, logger *log.Logger) *MySlack {
+	api := slack.New(token, slack.OptionDebug(verbose), slack.OptionLog(logger))
+
+	return &MySlack{
+		rtm: api.NewRTM(),
+		handlers: map[string]func(string) string{
+			"onMessage":             noop,
+			"onMessagingError":      noop,
+			"onAuthenticationError": noop,
+			"onConnected":           noop,
+			"onDisconnected":        noop,
+		},
+	}
 }
 
 // ConnectAsync is
@@ -75,20 +91,4 @@ func (s *MySlack) handleMessageEvent(ev *slack.MessageEvent) {
 
 func noop(a string) string {
 	return a
-}
-
-// NewSlackClient is
-func NewSlackClient(token string, verbose bool, logger *log.Logger) *MySlack {
-	api := slack.New(token, slack.OptionDebug(verbose), slack.OptionLog(logger))
-
-	return &MySlack{
-		rtm: api.NewRTM(),
-		handlers: map[string]func(string) string{
-			"onMessage":             noop,
-			"onMessagingError":      noop,
-			"onAuthenticationError": noop,
-			"onConnected":           noop,
-			"onDisconnected":        noop,
-		},
-	}
 }

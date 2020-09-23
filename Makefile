@@ -7,11 +7,11 @@ build:
 	go build -ldflags="-s -w" -trimpath -tags timetzdata -o ${APP_NAME}
 
 test:
-	go test
+	go test ./...
 
 lint:
-	go vet
-	golint -set_exit_status
+	go vet ./...
+	golint -set_exit_status ./...
 
 clean:
 	@rm -f ${APP_NAME} main

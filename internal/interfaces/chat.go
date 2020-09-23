@@ -1,4 +1,4 @@
-package main
+package interfaces
 
 // Chat is
 type Chat interface {
