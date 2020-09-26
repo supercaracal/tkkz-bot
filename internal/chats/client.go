@@ -1,7 +1,7 @@
-package interfaces
+package chats
 
-// Chat is
-type Chat interface {
+// ChatClient is
+type ChatClient interface {
 	ConnectAsync(chan<- struct{})
 	Disconnect() error
 	RegisterHandler(string, func(string) string)

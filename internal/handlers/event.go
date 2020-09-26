@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/supercaracal/tkkz-bot/internal/commands"
-	"github.com/supercaracal/tkkz-bot/internal/configurations"
+	"github.com/supercaracal/tkkz-bot/internal/shared"
 )
 
 var (
@@ -15,20 +15,20 @@ var (
 
 // EventHandler is
 type EventHandler struct {
-	cfg *configurations.MyConfig
+	ctx *shared.BotContext
 }
 
 // NewEventHandler is
-func NewEventHandler(cfg *configurations.MyConfig) *EventHandler {
-	return &EventHandler{cfg: cfg}
+func NewEventHandler(ctx *shared.BotContext) *EventHandler {
+	return &EventHandler{ctx: ctx}
 }
 
 // RespondToContact is
 func (h *EventHandler) RespondToContact(text string) string {
 	mentionIds, command := extractMentionIDsAndTokens(text)
 	for _, id := range mentionIds {
-		if id == h.cfg.BotID {
-			return doTask(command, h.cfg)
+		if id == h.ctx.Config.BotID {
+			return h.doTask(command)
 		}
 	}
 	return ""
@@ -36,14 +36,27 @@ func (h *EventHandler) RespondToContact(text string) string {
 
 // LogAsInfo is
 func (h *EventHandler) LogAsInfo(text string) string {
-	h.cfg.Logger.Info.Println(text)
+	h.ctx.Logger.Info.Println(text)
 	return ""
 }
 
 // LogAsErr is
 func (h *EventHandler) LogAsErr(text string) string {
-	h.cfg.Logger.Err.Println(text)
+	h.ctx.Logger.Err.Println(text)
 	return ""
+}
+
+func (h *EventHandler) doTask(command []string) string {
+	if len(command) == 0 {
+		return "Hi,"
+	}
+
+	switch strings.ToLower(command[0]) {
+	case "ping":
+		return commands.GetPingReply()
+	default:
+		return commands.GetDefaultReply()
+	}
 }
 
 func extractMentionIDsAndTokens(text string) ([]string, []string) {
@@ -62,17 +75,4 @@ func extractMentionIDsAndTokens(text string) ([]string, []string) {
 	}
 
 	return ids, tokens
-}
-
-func doTask(command []string, cfg *configurations.MyConfig) string {
-	if len(command) == 0 {
-		return "Hi,"
-	}
-
-	switch strings.ToLower(command[0]) {
-	case "ping":
-		return commands.GetPingReply()
-	default:
-		return commands.GetDefaultReply()
-	}
 }
