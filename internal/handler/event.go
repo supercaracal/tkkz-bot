@@ -1,10 +1,10 @@
-package handlers
+package handler
 
 import (
 	"regexp"
 	"strings"
 
-	"github.com/supercaracal/tkkz-bot/internal/commands"
+	"github.com/supercaracal/tkkz-bot/internal/command"
 	"github.com/supercaracal/tkkz-bot/internal/shared"
 )
 
@@ -25,10 +25,10 @@ func NewEventHandler(ctx *shared.BotContext) *EventHandler {
 
 // RespondToContact is
 func (h *EventHandler) RespondToContact(text string) string {
-	mentionIds, command := extractMentionIDsAndTokens(text)
+	mentionIds, cmd := extractMentionIDsAndTokens(text)
 	for _, id := range mentionIds {
 		if id == h.ctx.Config.BotID {
-			return h.doTask(command)
+			return h.doTask(cmd)
 		}
 	}
 	return ""
@@ -46,16 +46,16 @@ func (h *EventHandler) LogAsErr(text string) string {
 	return ""
 }
 
-func (h *EventHandler) doTask(command []string) string {
-	if len(command) == 0 {
+func (h *EventHandler) doTask(cmd []string) string {
+	if len(cmd) == 0 {
 		return "Hi,"
 	}
 
-	switch strings.ToLower(command[0]) {
+	switch strings.ToLower(cmd[0]) {
 	case "ping":
-		return commands.GetPingReply()
+		return command.GetPingReply()
 	default:
-		return commands.GetDefaultReply()
+		return command.GetDefaultReply()
 	}
 }
 

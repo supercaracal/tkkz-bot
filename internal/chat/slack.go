@@ -1,4 +1,4 @@
-package chats
+package chat
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type SlackClient struct {
 }
 
 // NewSlackClient is
-func NewSlackClient(token string, verbose bool, logger *log.Logger) ChatClient {
+func NewSlackClient(token string, verbose bool, logger *log.Logger) Client {
 	api := slack.New(token, slack.OptionDebug(verbose), slack.OptionLog(logger))
 
 	return &SlackClient{

@@ -9,21 +9,21 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/supercaracal/tkkz-bot/internal/chats"
-	"github.com/supercaracal/tkkz-bot/internal/configs"
-	"github.com/supercaracal/tkkz-bot/internal/handlers"
+	"github.com/supercaracal/tkkz-bot/internal/chat"
+	"github.com/supercaracal/tkkz-bot/internal/config"
+	"github.com/supercaracal/tkkz-bot/internal/handler"
 	"github.com/supercaracal/tkkz-bot/internal/shared"
 )
 
 func waitUntil(
-	chat chats.ChatClient,
+	chatCli chat.Client,
 	fail <-chan struct{},
 	sign <-chan os.Signal,
 ) error {
 
 	select {
 	case <-sign:
-		return chat.Disconnect()
+		return chatCli.Disconnect()
 	case <-fail:
 		return fmt.Errorf("Failed to manage connection")
 	}
@@ -32,8 +32,8 @@ func waitUntil(
 func main() {
 	godotenv.Load()
 
-	logger := configs.NewBotLogger()
-	cfg, err := configs.NewBotConfig()
+	logger := config.NewBotLogger()
+	cfg, err := config.NewBotConfig()
 	if err != nil {
 		logger.Err.Fatalln(err)
 	}
@@ -46,24 +46,24 @@ func main() {
 	sign := make(chan os.Signal, 1)
 	signal.Notify(sign, syscall.SIGTERM, os.Interrupt)
 
-	chat := chats.NewSlackClient(
+	chatCli := chat.NewSlackClient(
 		ctx.Config.SlackToken,
 		ctx.Config.Verbose,
 		ctx.Logger.Info,
 	)
 
-	h := handlers.NewEventHandler(ctx)
-	chat.RegisterHandler("onMessage", h.RespondToContact)
-	chat.RegisterHandler("onMessagingError", h.LogAsErr)
-	chat.RegisterHandler("onAuthenticationError", h.LogAsErr)
-	chat.RegisterHandler("onConnected", h.LogAsInfo)
-	chat.RegisterHandler("onDisconnected", h.LogAsInfo)
+	h := handler.NewEventHandler(ctx)
+	chatCli.RegisterHandler("onMessage", h.RespondToContact)
+	chatCli.RegisterHandler("onMessagingError", h.LogAsErr)
+	chatCli.RegisterHandler("onAuthenticationError", h.LogAsErr)
+	chatCli.RegisterHandler("onConnected", h.LogAsInfo)
+	chatCli.RegisterHandler("onDisconnected", h.LogAsInfo)
 
 	fail := make(chan struct{})
-	chat.ConnectAsync(fail)
-	chat.HandleEventsAsync()
+	chatCli.ConnectAsync(fail)
+	chatCli.HandleEventsAsync()
 
-	err = waitUntil(chat, fail, sign)
+	err = waitUntil(chatCli, fail, sign)
 	if err != nil {
 		ctx.Logger.Err.Fatalln(err)
 	}
