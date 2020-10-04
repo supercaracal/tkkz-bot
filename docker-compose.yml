@@ -3,12 +3,14 @@ version: '3'
 services:
   reudy:
     image: ghcr.io/supercaracal/reudy:latest
-    ports:
-      - "3000:3000"
+#   ports:
+#     - "3000:3000"
     volumes:
       - "/var/tmp/reudy:/opt/app/public"
-# bot:
-#   image: ghcr.io/supercaracal/tkkz-bot:latest
+  bot:
+    image: ghcr.io/supercaracal/tkkz-bot:latest
+    env_file:
+      - ".env"
 networks:
   default:
     ipam:
