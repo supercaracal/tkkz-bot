@@ -41,6 +41,7 @@ func main() {
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.BoolVar(&ctx.Config.Verbose, "verbose", false, "verbose log")
+	f.BoolVar(&ctx.Config.Debug, "debug", false, "debug with stdin/stdout")
 	f.Parse(os.Args[1:])
 
 	sign := make(chan os.Signal, 1)
@@ -51,6 +52,9 @@ func main() {
 		ctx.Config.Verbose,
 		ctx.Logger.Info,
 	)
+	if ctx.Config.Debug {
+		chatCli = chat.NewLocalClient()
+	}
 
 	h := handler.NewEventHandler(ctx)
 	chatCli.RegisterHandler("onMessage", h.RespondToContact)

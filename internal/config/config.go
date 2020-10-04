@@ -9,7 +9,9 @@ import (
 type BotConfig struct {
 	SlackToken string
 	BotID      string
+	BrainURL   string
 	Verbose    bool
+	Debug      bool
 }
 
 // NewBotConfig is
@@ -17,6 +19,7 @@ func NewBotConfig() (*BotConfig, error) {
 	cfg := BotConfig{
 		SlackToken: os.Getenv("SLACK_TOKEN"),
 		BotID:      os.Getenv("BOT_ID"),
+		BrainURL:   os.Getenv("BRAIN_URL"),
 	}
 
 	if cfg.SlackToken == "" {
