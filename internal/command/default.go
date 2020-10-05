@@ -9,6 +9,7 @@ import (
 
 const (
 	timeout = 300 * time.Second
+	ending  = "（ﾎﾞﾛﾝ"
 )
 
 // GetDefaultReply is
@@ -27,7 +28,7 @@ func GetDefaultReply(apiURL, message string) string {
 		return err.Error()
 	}
 
-	return reply
+	return reply + ending
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
