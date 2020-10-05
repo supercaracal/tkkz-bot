@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+const (
+	timeout = 30 * time.Second
+)
+
 // GetDefaultReply is
 func GetDefaultReply(apiURL, message string) string {
 	if apiURL == "" || message == "" {
@@ -41,7 +45,7 @@ func buildRequest(apiURL, message string) (*http.Request, error) {
 }
 
 func fetchReply(req *http.Request) (string, error) {
-	client := http.Client{Timeout: 5 * time.Second}
+	client := http.Client{Timeout: timeout}
 
 	res, err := client.Do(req)
 	if err != nil {
