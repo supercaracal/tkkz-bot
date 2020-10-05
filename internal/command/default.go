@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	timeout = 30 * time.Second
+	timeout = 300 * time.Second
 )
 
 // GetDefaultReply is
