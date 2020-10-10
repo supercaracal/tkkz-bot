@@ -10,6 +10,8 @@ REDIS_URL = ENV['REDIS_URL'] || 'redis://127.0.0.1:6379/0'
 pstore = PStore.new(PSTORE_DB_FILE_PATH)
 redis = Redis.new(url: REDIS_URL)
 
+redis.flushdb
+
 pstore.transaction do
   pstore.roots.each do |k|
     redis.del(k)
