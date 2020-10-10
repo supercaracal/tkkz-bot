@@ -2,6 +2,8 @@ SHELL           := /bin/bash
 APP_NAME        := tkkz-bot
 BRAIN_PORT_HOST ?= 3000
 BRAIN_DATA_PATH ?= /var/tmp/reudy
+REDIS_PORT_HOST ?= 6379
+REDIS_DATA_PATH ?= /var/tmp/reudy-redis
 
 all: build test lint
 
@@ -36,5 +38,8 @@ clean-image:
 
 run-brain:
 	@docker run --rm -p ${BRAIN_PORT_HOST}:3000 -v ${BRAIN_DATA_PATH}:/opt/app/public ghcr.io/supercaracal/reudy:latest
+
+run-brain-data:
+	@docker run --rm -p ${REDIS_PORT_HOST}:6379 -v ${REDIS_DATA_PATH}:/data redis:5.0.9
 
 .PHONY: all build test lint clean run build-image lint-image run-container clean-image run-brain

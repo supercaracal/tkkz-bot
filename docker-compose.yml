@@ -1,16 +1,29 @@
 ---
 version: '3'
 services:
+  redis:
+    image: redis:5.0.9
+    command: >
+      redis-server
+        --maxmemory        256mb
+        --maxmemory-policy noeviction
+        --appendonly       yes
+    volumes:
+      - "/var/tmp/reudy-redis:/data"
   reudy:
     image: ghcr.io/supercaracal/reudy:latest
-    ports:
-      - "3000:3000"
+    environment:
+      REDIS_URL: "redis://redis:6379/0"
     volumes:
       - "/var/tmp/reudy:/opt/app/public"
+    depends_on:
+      - redis
   bot:
     image: ghcr.io/supercaracal/tkkz-bot:latest
     env_file:
       - ".env"
+    depends_on:
+      - reudy
 networks:
   default:
     ipam:
