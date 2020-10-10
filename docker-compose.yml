@@ -3,6 +3,8 @@ version: '3'
 services:
   redis:
     image: redis:5.0.9
+    environment:
+      LANG: "C.UTF-8"
     command: >
       redis-server
         --maxmemory        256mb
