@@ -20,6 +20,8 @@ services:
       - redis
   bot:
     image: ghcr.io/supercaracal/tkkz-bot:latest
+    environment:
+      BRAIN_URL: "http://reudy:3000"
     env_file:
       - ".env"
     depends_on:
