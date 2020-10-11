@@ -14,15 +14,14 @@ redis.flushdb
 
 pstore.transaction do
   pstore.roots.each do |k|
-    redis.del(k)
     v = pstore[k]
     case v
     when Array
       v.each { |e| redis.rpush(k, e) }
     when String
-      redis.set(k, v)
+      redis.rpush(k, v)
     else
-      raise "Not expected type: #{v}"
+      raise "Not expected type=#{v.class} key=#{k} value=#{v.inspect}"
     end
   end
 end
