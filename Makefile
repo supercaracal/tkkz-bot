@@ -1,9 +1,6 @@
-SHELL           := /bin/bash
-APP_NAME        := tkkz-bot
-BRAIN_PORT_HOST ?= 3000
-BRAIN_DATA_PATH ?= /var/tmp/reudy
-REDIS_PORT_HOST ?= 6379
-REDIS_DATA_PATH ?= /var/tmp/reudy-redis
+SHELL      := /bin/bash
+APP_NAME   := tkkz-bot
+BRAIN_PORT ?= 3000
 
 all: build test lint
 
@@ -21,7 +18,7 @@ clean:
 	@rm -f ${APP_NAME} main
 
 run:
-	@BRAIN_URL=http://127.0.0.1:${BRAIN_PORT_HOST} ./${APP_NAME} -debug
+	@BRAIN_URL=http://127.0.0.1:${BRAIN_PORT} ./${APP_NAME} -debug
 
 build-image:
 	@docker build -t ${APP_NAME} .
@@ -37,9 +34,9 @@ clean-image:
 	@docker rmi -f ${APP_NAME}
 
 run-brain:
-	@docker run --rm -p ${BRAIN_PORT_HOST}:3000 -v ${BRAIN_DATA_PATH}:/opt/app/public ghcr.io/supercaracal/reudy:latest
+	@docker-compose -f docker-compose.development.yml up
 
-run-brain-data:
-	@docker run --rm -p ${REDIS_PORT_HOST}:6379 -v ${REDIS_DATA_PATH}:/data redis:5.0.9
+stop-brain:
+	@docker-compose -f docker-compose.development.yml down
 
-.PHONY: all build test lint clean run build-image lint-image run-container clean-image run-brain
+.PHONY: all build test lint clean run build-image lint-image run-container clean-image run-brain stop-brain

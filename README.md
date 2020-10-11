@@ -13,7 +13,8 @@ This is a chatbot. One day, he said:
 ## Usage
 
 ```
-$ make run-brain
+$ vim .env       # copy from .env.sample and edit
+$ make run-brain # type on the other terminal
 $ make build
 $ make run
 > Hello

@@ -11,26 +11,21 @@ services:
         --maxmemory-policy noeviction
         --appendonly       yes
     volumes:
-      - "/var/tmp/reudy-redis:/data"
+      - "${REDIS_DATA_PATH}:/data"
+    ports:
+      - "${REDIS_PORT}:6379"
   reudy:
     image: ghcr.io/supercaracal/reudy:latest
     environment:
       REDIS_URL: "redis://redis:6379/0"
     volumes:
-      - "/var/tmp/reudy:/opt/app/public"
+      - "${BRAIN_DATA_PATH}:/opt/app/public"
     depends_on:
       - redis
-  bot:
-    image: ghcr.io/supercaracal/tkkz-bot:latest
-    environment:
-      TZ: "Asia/Tokyo"
-      SLACK_TOKEN: "${SLACK_TOKEN}"
-      BOT_ID: "${BOT_ID}"
-      BRAIN_URL: "http://reudy:3000"
-    depends_on:
-      - reudy
+    ports:
+      - "${BRAIN_PORT}:3000"
 networks:
   default:
     ipam:
       config:
-        - subnet: "172.20.13.0/28"
+        - subnet: "172.20.14.0/28"
