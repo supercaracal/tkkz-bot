@@ -26,6 +26,7 @@ func TestExtractMentionIDsAndTokens(t *testing.T) {
 		actualIds, actualTokens := extractMentionIDsAndTokens(c.paramText)
 		if len(c.expectedIds) != len(actualIds) {
 			t.Errorf("%d: expected=%d, actual=%d", n, len(c.expectedIds), len(actualIds))
+			continue
 		}
 		for i, id := range actualIds {
 			if c.expectedIds[i] != id {
@@ -35,6 +36,7 @@ func TestExtractMentionIDsAndTokens(t *testing.T) {
 		}
 		if len(c.expectedTokens) != len(actualTokens) {
 			t.Errorf("%d: expected=%d, actual=%d", n, len(c.expectedTokens), len(actualTokens))
+			continue
 		}
 		for i, token := range actualTokens {
 			if c.expectedTokens[i] != token {

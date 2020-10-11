@@ -27,12 +27,6 @@ func NewEventHandler(ctx *shared.BotContext) *EventHandler {
 func (h *EventHandler) RespondToContact(text string) string {
 	_, cmd := extractMentionIDsAndTokens(text)
 	return h.doTask(cmd)
-	//	for _, id := range mentionIds {
-	//		if id == h.ctx.Config.BotID {
-	//			return h.doTask(cmd)
-	//		}
-	//	}
-	//	return ""
 }
 
 // LogAsInfo is
@@ -55,6 +49,8 @@ func (h *EventHandler) doTask(cmd []string) string {
 	switch strings.ToLower(cmd[0]) {
 	case "ping":
 		return command.GetPingReply()
+	case "pang":
+		return command.GetPangReply()
 	default:
 		return command.GetDefaultReply(h.ctx.Config.BrainURL, strings.Join(cmd, " "))
 	}
