@@ -43,10 +43,6 @@ func (c *LocalClient) HandleEventsAsync() {
 			input := sc.Text()
 			lowerInput := strings.ToLower(input)
 			if lowerInput == "exit" || lowerInput == "quit" {
-				err := c.stopChat()
-				if err != nil {
-					c.handleEvent("onDisconnected", err.Error())
-				}
 				break
 			}
 			if output := c.handleEvent("onMessage", input); output != "" {
