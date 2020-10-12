@@ -57,11 +57,9 @@ func main() {
 	}
 
 	h := handler.NewEventHandler(ctx)
-	chatCli.RegisterHandler("onMessage", h.RespondToContact)
-	chatCli.RegisterHandler("onMessagingError", h.LogAsErr)
-	chatCli.RegisterHandler("onAuthenticationError", h.LogAsErr)
-	chatCli.RegisterHandler("onConnected", h.LogAsInfo)
-	chatCli.RegisterHandler("onDisconnected", h.LogAsInfo)
+	chatCli.RegisterHandler(chat.EventOnConnection, h.LogAsInfo)
+	chatCli.RegisterHandler(chat.EventOnMessage, h.RespondToContact)
+	chatCli.RegisterHandler(chat.EventOnError, h.LogAsErr)
 
 	fail := make(chan struct{})
 	chatCli.ConnectAsync(fail)

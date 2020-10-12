@@ -45,14 +45,14 @@ func (c *LocalClient) HandleEventsAsync() {
 			if lowerInput == "exit" || lowerInput == "quit" {
 				break
 			}
-			if output := c.handleEvent("onMessage", input); output != "" {
+			if output := c.handleEvent(EventOnMessage, input); output != "" {
 				fmt.Println(output)
 			}
 			fmt.Print("> ")
 		}
 		err := c.stopChat()
 		if err != nil {
-			c.handleEvent("onDisconnected", err.Error())
+			c.handleEvent(EventOnError, err.Error())
 		}
 	}(sc)
 }

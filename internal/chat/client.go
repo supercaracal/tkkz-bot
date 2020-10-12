@@ -7,3 +7,10 @@ type Client interface {
 	RegisterHandler(string, func(string) string)
 	HandleEventsAsync()
 }
+
+// Event keys for handler
+const (
+	EventOnConnection = "onConnection"
+	EventOnMessage    = "onMessage"
+	EventOnError      = "onError"
+)
