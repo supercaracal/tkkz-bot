@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"syscall"
 )
 
 // LocalClient is
@@ -70,7 +69,7 @@ func (c *LocalClient) stopChat() error {
 	if err != nil {
 		return err
 	}
-	err = proc.Signal(syscall.SIGTERM)
+	err = proc.Signal(os.Interrupt)
 	if err != nil {
 		return err
 	}
