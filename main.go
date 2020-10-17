@@ -33,26 +33,26 @@ func main() {
 	godotenv.Load()
 
 	logger := config.NewBotLogger()
-	cfg, err := config.NewBotConfig()
+	opt, err := config.NewBotOption()
 	if err != nil {
 		logger.Err.Fatalln(err)
 	}
-	ctx := shared.NewBotContext(cfg, logger)
+	ctx := shared.NewBotContext(opt, logger)
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	f.BoolVar(&ctx.Config.Verbose, "verbose", false, "verbose log")
-	f.BoolVar(&ctx.Config.Debug, "debug", false, "debug with stdin/stdout")
+	f.BoolVar(&ctx.Option.Verbose, "verbose", false, "verbose log")
+	f.BoolVar(&ctx.Option.Debug, "debug", false, "debug with stdin/stdout")
 	f.Parse(os.Args[1:])
 
 	sign := make(chan os.Signal, 1)
 	signal.Notify(sign, syscall.SIGTERM, os.Interrupt)
 
 	chatCli := chat.NewSlackClient(
-		ctx.Config.SlackToken,
-		ctx.Config.Verbose,
+		ctx.Option.SlackToken,
+		ctx.Option.Verbose,
 		ctx.Logger.Info,
 	)
-	if ctx.Config.Debug {
+	if ctx.Option.Debug {
 		chatCli = chat.NewLocalClient()
 	}
 

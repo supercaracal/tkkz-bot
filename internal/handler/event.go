@@ -52,7 +52,7 @@ func (h *EventHandler) doTask(cmd []string) string {
 	case "pang":
 		return command.GetPangReply()
 	default:
-		return command.GetDefaultReply(h.ctx.Config.BrainURL, strings.Join(cmd, " "))
+		return command.GetDefaultReply(h.ctx.Option.BrainURL, strings.Join(cmd, " "))
 	}
 }
 

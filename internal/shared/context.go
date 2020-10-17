@@ -6,11 +6,11 @@ import (
 
 // BotContext is
 type BotContext struct {
-	Config *config.BotConfig
+	Option *config.BotOption
 	Logger *config.BotLogger
 }
 
 // NewBotContext is
-func NewBotContext(c *config.BotConfig, l *config.BotLogger) *BotContext {
-	return &BotContext{Config: c, Logger: l}
+func NewBotContext(o *config.BotOption, l *config.BotLogger) *BotContext {
+	return &BotContext{Option: o, Logger: l}
 }

@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-// BotConfig is
-type BotConfig struct {
+// BotOption is
+type BotOption struct {
 	SlackToken string
 	BotID      string
 	BrainURL   string
@@ -14,21 +14,21 @@ type BotConfig struct {
 	Debug      bool
 }
 
-// NewBotConfig is
-func NewBotConfig() (*BotConfig, error) {
-	cfg := BotConfig{
+// NewBotOption is
+func NewBotOption() (*BotOption, error) {
+	opt := BotOption{
 		SlackToken: os.Getenv("SLACK_TOKEN"),
 		BotID:      os.Getenv("BOT_ID"),
 		BrainURL:   os.Getenv("BRAIN_URL"),
 	}
 
-	if cfg.SlackToken == "" {
+	if opt.SlackToken == "" {
 		return nil, fmt.Errorf("SLACK_TOKEN environment variable required")
 	}
 
-	if cfg.BotID == "" {
+	if opt.BotID == "" {
 		return nil, fmt.Errorf("BOT_ID environment variable required")
 	}
 
-	return &cfg, nil
+	return &opt, nil
 }
