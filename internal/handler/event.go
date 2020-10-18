@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/supercaracal/tkkz-bot/internal/command"
-	"github.com/supercaracal/tkkz-bot/internal/shared"
+	"github.com/supercaracal/tkkz-bot/internal/config"
 )
 
 var (
@@ -15,11 +15,11 @@ var (
 
 // EventHandler is
 type EventHandler struct {
-	ctx *shared.BotContext
+	ctx *config.BotContext
 }
 
 // NewEventHandler is
-func NewEventHandler(ctx *shared.BotContext) *EventHandler {
+func NewEventHandler(ctx *config.BotContext) *EventHandler {
 	return &EventHandler{ctx: ctx}
 }
 

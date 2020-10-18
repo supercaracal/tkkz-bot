@@ -12,7 +12,6 @@ import (
 	"github.com/supercaracal/tkkz-bot/internal/chat"
 	"github.com/supercaracal/tkkz-bot/internal/config"
 	"github.com/supercaracal/tkkz-bot/internal/handler"
-	"github.com/supercaracal/tkkz-bot/internal/shared"
 )
 
 func waitUntil(
@@ -37,7 +36,7 @@ func main() {
 	if err != nil {
 		logger.Err.Fatalln(err)
 	}
-	ctx := shared.NewBotContext(opt, logger)
+	ctx := config.NewBotContext(opt, logger)
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.BoolVar(&ctx.Option.Verbose, "verbose", false, "verbose log")
