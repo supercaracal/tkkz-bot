@@ -23,12 +23,14 @@ func GetDefaultReply(apiURL, message string) string {
 		return err.Error()
 	}
 
-	reply, err := fetchReply(req)
+	cli := buildClient()
+
+	reply, err := fetchReply(cli, req)
 	if err != nil {
 		return err.Error()
 	}
 
-	return reply + ending
+	return fmt.Sprintf("%s%s", reply, ending)
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
@@ -45,9 +47,15 @@ func buildRequest(apiURL, message string) (*http.Request, error) {
 	return req, nil
 }
 
-func fetchReply(req *http.Request) (string, error) {
+func buildClient() *http.Client {
 	client := http.Client{Timeout: timeout}
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
+	return &client
+}
 
+func fetchReply(client *http.Client, req *http.Request) (string, error) {
 	res, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("Failed to request to brain api: %w", err)
