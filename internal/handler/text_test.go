@@ -20,6 +20,9 @@ func TestExtractMentionIDsAndTokens(t *testing.T) {
 		{"foo<@U0000AAAA><@U0000BBBB>bar", []string{"U0000AAAA", "U0000BBBB"}, []string{"foo", "bar"}},
 		{"foo<@U0000AAAA><@U0000BBBB><@U0000CCCC>bar", []string{"U0000AAAA", "U0000BBBB", "U0000CCCC"}, []string{"foo", "bar"}},
 		{"foo<@U0000AAAA>bar<@U0000BBBB>baz", []string{"U0000AAAA", "U0000BBBB"}, []string{"foo", "bar", "baz"}},
+		{"<@U0000AAAA> \xc2\xa0foobar", []string{"U0000AAAA"}, []string{"foobar"}},
+		{string([]rune{'<', '@', 'U', '1', '>', ' ', 'f', 'o', 'o', 0xa0, 'b', 'a', 'r'}), []string{"U1"}, []string{"foo", "bar"}},
+		{string([]rune{'<', '@', 'U', '1', '>', ' ', 'あ', 0xa0, 'い'}), []string{"U1"}, []string{"あ", "い"}},
 	}
 
 	for n, c := range cases {
@@ -43,6 +46,46 @@ func TestExtractMentionIDsAndTokens(t *testing.T) {
 				t.Errorf("%d: expected=%s, actual=%s", n, c.expectedTokens[i], token)
 				break
 			}
+		}
+	}
+}
+
+func TestSanitizeNotPrintableChars(t *testing.T) {
+	cases := []struct {
+		str  string
+		want string
+	}{
+		{"pqr", "pqr"},
+		{"ｱｲｳ", "ｱｲｳ"},
+		{"あいう", "あいう"},
+		{string([]rune{'p', 0x1f, 'q', 0x7f, 'r'}), "p q r"},
+		{string([]rune{'p', 0xa0, 'q', 0xa0, 'r'}), "p q r"},
+		{string([]rune{'ｱ', 0xa0, 'ｲ', 0xe0, 'ｳ'}), "ｱ ｲ ｳ"},
+		{string([]rune{'ｱ', 0xa0, 'ｲ', 0xa0, 'ｳ'}), "ｱ ｲ ｳ"},
+		{string([]rune{'あ', 0xa0, 'い', 0xa0, 'う'}), "あ い う"},
+	}
+
+	for n, c := range cases {
+		if got := sanitizeNotPrintableChars(c.str); got != c.want {
+			t.Errorf("%d: want=%s, got=%s", n, c.want, got)
+		}
+	}
+}
+
+func TestNormalizeText(t *testing.T) {
+	cases := []struct {
+		text string
+		want string
+	}{
+		{"a\tb　c", "a b c"},
+		{"foo<@U0000AAAA>bar", "foo <@U0000AAAA> bar"},
+		{" a  bc ", "a bc"},
+		{" あ  いう ", "あ いう"},
+	}
+
+	for n, c := range cases {
+		if got := normalizeText(c.text); got != c.want {
+			t.Errorf("%d: want=%s, got=%s", n, c.want, got)
 		}
 	}
 }

@@ -1,16 +1,10 @@
 package handler
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/supercaracal/tkkz-bot/internal/command"
 	"github.com/supercaracal/tkkz-bot/internal/config"
-)
-
-var (
-	regexpForWhiteSpace = regexp.MustCompile(`[\s　]+`)
-	regexpForMention    = regexp.MustCompile(`(?P<mention><@U[0-9A-Z]+>)`)
 )
 
 // EventHandler is
@@ -54,22 +48,4 @@ func (h *EventHandler) doTask(cmd []string) string {
 	default:
 		return command.GetDefaultReply(h.ctx.Option.BrainURL, strings.Join(cmd, " "))
 	}
-}
-
-func extractMentionIDsAndTokens(text string) ([]string, []string) {
-	txt := regexpForMention.ReplaceAllString(text, " ${mention} ")
-	txt = regexpForWhiteSpace.ReplaceAllString(txt, " ")
-	txt = strings.TrimSpace(txt)
-	words := strings.Split(txt, " ")
-	ids := make([]string, 0, len(words))
-	tokens := make([]string, 0, len(words))
-	for _, word := range words {
-		if strings.HasPrefix(word, "<@U") && strings.HasSuffix(word, ">") {
-			ids = append(ids, string([]rune(word)[2:len(word)-1]))
-		} else {
-			tokens = append(tokens, word)
-		}
-	}
-
-	return ids, tokens
 }
