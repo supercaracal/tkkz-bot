@@ -26,6 +26,8 @@ services:
       TZ: "Asia/Tokyo"
       SLACK_TOKEN: "${SLACK_TOKEN}"
       BOT_ID: "${BOT_ID}"
+      SLACK_APP_TOKEN: "${SLACK_APP_TOKEN}"
+      SLACK_BOT_TOKEN: "${SLACK_BOT_TOKEN}"
       BRAIN_URL: "http://reudy:3000"
     depends_on:
       - reudy
