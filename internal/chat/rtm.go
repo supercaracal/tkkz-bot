@@ -8,24 +8,24 @@ import (
 	"github.com/slack-go/slack"
 )
 
-// SlackClient is
-type SlackClient struct {
+// SlackRTMClient is
+type SlackRTMClient struct {
 	rtm      *slack.RTM
 	handlers map[string]func(string) string
 }
 
-// NewSlackClient is
-func NewSlackClient(token string, verbose bool, logger *log.Logger) Client {
+// NewSlackRTMClient is
+func NewSlackRTMClient(token string, verbose bool, logger *log.Logger) Client {
 	api := slack.New(token, slack.OptionDebug(verbose), slack.OptionLog(logger))
 
-	return &SlackClient{
+	return &SlackRTMClient{
 		rtm:      api.NewRTM(),
 		handlers: map[string]func(string) string{},
 	}
 }
 
 // ConnectAsync is
-func (s *SlackClient) ConnectAsync(fail chan<- struct{}) {
+func (s *SlackRTMClient) ConnectAsync(fail chan<- struct{}) {
 	go func(rtm *slack.RTM, cn chan<- struct{}) {
 		rtm.ManageConnection()
 		cn <- struct{}{}
@@ -33,21 +33,21 @@ func (s *SlackClient) ConnectAsync(fail chan<- struct{}) {
 }
 
 // Disconnect is
-func (s *SlackClient) Disconnect() error {
+func (s *SlackRTMClient) Disconnect() error {
 	return s.rtm.Disconnect()
 }
 
 // RegisterHandler is
-func (s *SlackClient) RegisterHandler(event string, h func(string) string) {
+func (s *SlackRTMClient) RegisterHandler(event string, h func(string) string) {
 	s.handlers[event] = h
 }
 
 // HandleEventsAsync is
-func (s *SlackClient) HandleEventsAsync() {
+func (s *SlackRTMClient) HandleEventsAsync() {
 	go s.startEventLoop()
 }
 
-func (s *SlackClient) startEventLoop() {
+func (s *SlackRTMClient) startEventLoop() {
 	for msg := range s.rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
@@ -58,7 +58,7 @@ func (s *SlackClient) startEventLoop() {
 		case *slack.InvalidAuthEvent:
 			s.handleEvent(EventOnError, "Invalid Slack token")
 		case *slack.ConnectedEvent:
-			s.handleEvent(EventOnConnection, "Connected to Slack")
+			s.handleEvent(EventOnConnection, "Connected to Slack via RTM")
 		case *slack.DisconnectedEvent:
 			reply := fmt.Sprintf("Disconnected from Slack: intentionally=%t %s", ev.Intentional, ev.Cause.Error())
 			s.handleEvent(EventOnConnection, reply)
@@ -68,7 +68,7 @@ func (s *SlackClient) startEventLoop() {
 	}
 }
 
-func (s *SlackClient) handleEvent(eventKey, text string) string {
+func (s *SlackRTMClient) handleEvent(eventKey, text string) string {
 	if h, ok := s.handlers[eventKey]; ok {
 		return h(text)
 	}
@@ -76,7 +76,7 @@ func (s *SlackClient) handleEvent(eventKey, text string) string {
 	return ""
 }
 
-func (s *SlackClient) handleMessageEvent(ev *slack.MessageEvent) {
+func (s *SlackRTMClient) handleMessageEvent(ev *slack.MessageEvent) {
 	if ev.SubType != "" || strings.HasPrefix(ev.Channel, "D") || ev.BotID != "" {
 		return
 	}
