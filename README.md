@@ -16,7 +16,7 @@ This is a chatbot. One day, he said:
 $ vim .env       # copy from .env.sample and edit
 $ make run-brain # type on the other terminal
 $ make build
-$ make run
+$ make run-debug
 > Hello
 Hi,
 > exit
