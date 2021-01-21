@@ -18,6 +18,9 @@ clean:
 	@rm -f ${APP_NAME} main
 
 run:
+	@BRAIN_URL=http://127.0.0.1:${BRAIN_PORT} ./${APP_NAME}
+
+run-debug:
 	@BRAIN_URL=http://127.0.0.1:${BRAIN_PORT} ./${APP_NAME} -debug
 
 build-image:
