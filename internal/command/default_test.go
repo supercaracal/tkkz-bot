@@ -35,7 +35,8 @@ func TestGetDefaultReply(t *testing.T) {
 		{
 			"302",
 			http.RedirectHandler("https://www.example.com", http.StatusFound),
-			"brain api replied 302: <a href=\"https://www.example.com\">Found</a>.\n\n",
+			// "brain api replied 302: <a href=\"https://www.example.com\">Found</a>.\n\n",
+			"brain api replied 302: ",
 		},
 		{
 			"404",

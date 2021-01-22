@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -34,15 +36,15 @@ func GetDefaultReply(apiURL, message string) string {
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
-	req, err := http.NewRequest(http.MethodGet, apiURL, nil)
+	req, err := http.NewRequest(http.MethodPost, apiURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create request object for brain api: %w", err)
 	}
 
-	q := req.URL.Query()
-	q.Add("speaker", "human")
-	q.Add("message", message)
-	req.URL.RawQuery = q.Encode()
+	form := url.Values{}
+	form.Add("speaker", "human")
+	form.Add("message", message)
+	req.Body = ioutil.NopCloser(strings.NewReader(form.Encode()))
 
 	return req, nil
 }
