@@ -9,12 +9,12 @@ import (
 
 // EventHandler is
 type EventHandler struct {
-	ctx *config.BotContext
+	cfg *config.BotConfig
 }
 
 // NewEventHandler is
-func NewEventHandler(ctx *config.BotContext) *EventHandler {
-	return &EventHandler{ctx: ctx}
+func NewEventHandler(cfg *config.BotConfig) *EventHandler {
+	return &EventHandler{cfg: cfg}
 }
 
 // RespondToContact is
@@ -25,13 +25,13 @@ func (h *EventHandler) RespondToContact(text string) string {
 
 // LogAsInfo is
 func (h *EventHandler) LogAsInfo(text string) string {
-	h.ctx.Logger.Info.Println(text)
+	h.cfg.Logger.Info.Println(text)
 	return ""
 }
 
 // LogAsErr is
 func (h *EventHandler) LogAsErr(text string) string {
-	h.ctx.Logger.Err.Println(text)
+	h.cfg.Logger.Err.Println(text)
 	return ""
 }
 
@@ -46,6 +46,6 @@ func (h *EventHandler) doTask(cmd []string) string {
 	case "pang":
 		return command.GetPangReply()
 	default:
-		return command.GetDefaultReply(h.ctx.Option.BrainURL, strings.Join(cmd, " "))
+		return command.GetDefaultReply(h.cfg.Option.BrainURL, strings.Join(cmd, " "))
 	}
 }
