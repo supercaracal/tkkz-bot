@@ -12,6 +12,16 @@ services:
         --appendonly       yes
     volumes:
       - "/var/tmp/reudy-redis:/data"
+  mackerel-agent:
+    image: mackerel/mackerel-agent:latest
+    environment:
+      apikey: "${MACKEREL_API_KEY}"
+      include: "/etc/mackerel-agent/conf.d/*.conf"
+    volumes:
+      - "/var/tmp/reudy-redis-mackerel:/var/lib/mackerel-agent"
+      - "./config/mackerel-agent:/etc/mackerel-agent/conf.d:ro"
+    depends_on:
+      - redis
   reudy:
     image: ghcr.io/supercaracal/reudy:latest
     environment:
