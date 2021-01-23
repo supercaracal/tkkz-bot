@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -12,6 +13,10 @@ import (
 const (
 	timeout = 300 * time.Second
 	ending  = "（ﾎﾞﾛﾝ"
+)
+
+var (
+	regexpForMention = regexp.MustCompile(`(?P<mention><@U[0-9A-Z]+>)`)
 )
 
 // GetDefaultReply is
@@ -32,7 +37,7 @@ func GetDefaultReply(apiURL, message string) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("%s%s", reply, ending)
+	return fmt.Sprintf("%s%s", trimReply(reply), ending)
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
@@ -80,4 +85,8 @@ func fetchReply(client *http.Client, req *http.Request) (string, error) {
 	}
 
 	return string(reply), nil
+}
+
+func trimReply(text string) string {
+	return regexpForMention.ReplaceAllString(text, "")
 }
