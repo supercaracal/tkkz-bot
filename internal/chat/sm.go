@@ -42,7 +42,7 @@ func NewSlackSMClient(appToken, botToken string, verbose bool, logger *log.Logge
 // ConnectAsync is
 func (s *SlackSMClient) ConnectAsync(fail chan<- struct{}) {
 	go func(sm *socketmode.Client, cn chan<- struct{}) {
-		sm.Run()
+		_ = sm.Run()
 		cn <- struct{}{}
 	}(s.sm, fail)
 }
