@@ -85,7 +85,7 @@ func TestTrimReply(t *testing.T) {
 		{"<http://example.com>foobar", "foobar"},
 		{"foobar<http://example.com>", "foobar"},
 		{"foo<http://example.com>bar", "foobar"},
-		{" 　\t:+1: < foo <123ABC>bar\r\n", "foo bar"},
+		{" 　\t:+1: &lt; foo <123ABC>bar\r\n", "foo bar"},
 	}
 
 	for i, c := range cases {

@@ -93,7 +93,7 @@ func trimReply(text string) string {
 	text = regexpForMention.ReplaceAllString(text, "")
 	text = regexpForEmoticon.ReplaceAllString(text, "")
 	text = regexpForURL.ReplaceAllString(text, "")
-	text = strings.ReplaceAll(text, "< ", "")
+	text = strings.ReplaceAll(text, "&lt; ", "")
 
 	return strings.Trim(text, " 　\t\r\n")
 }
