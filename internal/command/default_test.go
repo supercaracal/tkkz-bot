@@ -79,7 +79,13 @@ func TestTrimReply(t *testing.T) {
 		{"<@U123ABC>foobar", "foobar"},
 		{"foo<@U123ABC>bar", "foobar"},
 		{"foobar<@U123ABC>", "foobar"},
-		{" 　\tfoo <123ABC>bar\r\n", "foo <123ABC>bar"},
+		{":+1:foobar", "foobar"},
+		{"foobar:+1:", "foobar"},
+		{"foo:+1:bar", "foobar"},
+		{"<http://example.com>foobar", "foobar"},
+		{"foobar<http://example.com>", "foobar"},
+		{"foo<http://example.com>bar", "foobar"},
+		{" 　\t:+1: < foo <123ABC>bar\r\n", "foo bar"},
 	}
 
 	for i, c := range cases {

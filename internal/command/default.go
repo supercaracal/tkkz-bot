@@ -16,7 +16,9 @@ const (
 )
 
 var (
-	regexpForMention = regexp.MustCompile(`(?P<mention><@U[0-9A-Z]+>)`)
+	regexpForMention  = regexp.MustCompile(`<@U[0-9A-Z]+>`)
+	regexpForEmoticon = regexp.MustCompile(`:\S+:`)
+	regexpForURL      = regexp.MustCompile(`<\S+>`)
 )
 
 // GetDefaultReply is
@@ -88,7 +90,12 @@ func fetchReply(client *http.Client, req *http.Request) (string, error) {
 }
 
 func trimReply(text string) string {
-	return strings.Trim(regexpForMention.ReplaceAllString(text, ""), " 　\t\r\n")
+	text = regexpForMention.ReplaceAllString(text, "")
+	text = regexpForEmoticon.ReplaceAllString(text, "")
+	text = regexpForURL.ReplaceAllString(text, "")
+	text = strings.ReplaceAll(text, "< ", "")
+
+	return strings.Trim(text, " 　\t\r\n")
 }
 
 func personalizeReply(text string) string {
