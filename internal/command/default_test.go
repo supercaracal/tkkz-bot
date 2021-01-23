@@ -79,11 +79,26 @@ func TestTrimReply(t *testing.T) {
 		{"<@U123ABC>foobar", "foobar"},
 		{"foo<@U123ABC>bar", "foobar"},
 		{"foobar<@U123ABC>", "foobar"},
-		{"foo<123ABC>bar", "foo<123ABC>bar"},
+		{" 　\tfoo <123ABC>bar\r\n", "foo <123ABC>bar"},
 	}
 
 	for i, c := range cases {
 		if got := trimReply(c.text); got != c.want {
+			t.Errorf("%d: want: %s, got: %s", i, c.want, got)
+		}
+	}
+}
+
+func TestPersonalizeReply(t *testing.T) {
+	cases := []struct {
+		text string
+		want string
+	}{
+		{"foobar", "foobar（ﾎﾞﾛﾝ"},
+	}
+
+	for i, c := range cases {
+		if got := personalizeReply(c.text); got != c.want {
 			t.Errorf("%d: want: %s, got: %s", i, c.want, got)
 		}
 	}

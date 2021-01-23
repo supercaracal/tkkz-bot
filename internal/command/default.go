@@ -37,7 +37,7 @@ func GetDefaultReply(apiURL, message string) string {
 		return err.Error()
 	}
 
-	return fmt.Sprintf("%s%s", trimReply(reply), ending)
+	return personalizeReply(trimReply(reply))
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
@@ -88,5 +88,9 @@ func fetchReply(client *http.Client, req *http.Request) (string, error) {
 }
 
 func trimReply(text string) string {
-	return regexpForMention.ReplaceAllString(text, "")
+	return strings.Trim(regexpForMention.ReplaceAllString(text, ""), " 　\t\r\n")
+}
+
+func personalizeReply(text string) string {
+	return fmt.Sprintf("%s%s", text, ending)
 }
