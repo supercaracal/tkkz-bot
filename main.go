@@ -14,12 +14,7 @@ import (
 	"github.com/supercaracal/tkkz-bot/internal/handler"
 )
 
-func waitUntil(
-	clients []chat.Client,
-	fail <-chan struct{},
-	sign <-chan os.Signal,
-) error {
-
+func waitUntil(clients []chat.Client, fail <-chan struct{}, sign <-chan os.Signal) error {
 	select {
 	case <-sign:
 		for _, cli := range clients {
