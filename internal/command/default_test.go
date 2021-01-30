@@ -76,16 +76,16 @@ func TestTrimReply(t *testing.T) {
 		want string
 	}{
 		{"foobar", "foobar"},
-		{"<@U123ABC>foobar", "foobar"},
-		{"foo<@U123ABC>bar", "foobar"},
-		{"foobar<@U123ABC>", "foobar"},
-		{":+1:foobar", "foobar"},
-		{"foobar:+1:", "foobar"},
-		{"foo:+1:bar", "foobar"},
+		{"<@U123ABC>foobar", "humanfoobar"},
+		{"foo<@U123ABC>bar", "foohumanbar"},
+		{"foobar<@U123ABC>", "foobarhuman"},
+		{":+1:foobar", "****foobar"},
+		{"foo:+1:bar", "foo****bar"},
+		{"foobar:+1:", "foobar****"},
 		{"<http://example.com>foobar", "foobar"},
-		{"foobar<http://example.com>", "foobar"},
 		{"foo<http://example.com>bar", "foobar"},
-		{" 　\t:+1: &lt; foo <123ABC>bar\r\n", "foo bar"},
+		{"foobar<http://example.com>", "foobar"},
+		{" 　\t:+1: &lt; foo <123ABC>bar\r\n", "**** foo bar"},
 	}
 
 	for i, c := range cases {

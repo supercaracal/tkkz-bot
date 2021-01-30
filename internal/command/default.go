@@ -12,6 +12,7 @@ import (
 
 const (
 	timeout = 300 * time.Second
+	speaker = "human"
 	ending  = "（ﾎﾞﾛﾝ"
 )
 
@@ -49,7 +50,7 @@ func buildRequest(apiURL, message string) (*http.Request, error) {
 	}
 
 	form := url.Values{}
-	form.Add("speaker", "human")
+	form.Add("speaker", speaker)
 	form.Add("message", message)
 	req.Body = ioutil.NopCloser(strings.NewReader(form.Encode()))
 
@@ -90,8 +91,8 @@ func fetchReply(client *http.Client, req *http.Request) (string, error) {
 }
 
 func trimReply(text string) string {
-	text = regexpForMention.ReplaceAllString(text, "")
-	text = regexpForEmoticon.ReplaceAllString(text, "")
+	text = regexpForMention.ReplaceAllString(text, speaker)
+	text = regexpForEmoticon.ReplaceAllString(text, "****")
 	text = regexpForURL.ReplaceAllString(text, "")
 	text = strings.ReplaceAll(text, "&lt; ", "")
 
