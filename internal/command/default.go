@@ -91,8 +91,8 @@ func fetchReply(client *http.Client, req *http.Request) (string, error) {
 }
 
 func trimReply(text string) string {
-	text = regexpForMention.ReplaceAllString(text, speaker)
-	text = regexpForEmoticon.ReplaceAllString(text, "****")
+	text = regexpForMention.ReplaceAllString(text, "")
+	text = regexpForEmoticon.ReplaceAllString(text, "")
 	text = regexpForURL.ReplaceAllString(text, "")
 	text = strings.ReplaceAll(text, "&lt; ", "")
 
