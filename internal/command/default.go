@@ -44,15 +44,18 @@ func GetDefaultReply(apiURL, message string) string {
 }
 
 func buildRequest(apiURL, message string) (*http.Request, error) {
-	req, err := http.NewRequest(http.MethodPost, apiURL, nil)
+	params := url.Values{}
+	params.Add("speaker", speaker)
+	params.Add("message", message)
+
+	req, err := http.NewRequest(
+		http.MethodPost,
+		apiURL,
+		ioutil.NopCloser(strings.NewReader(params.Encode())),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create request object for brain api: %w", err)
 	}
-
-	form := url.Values{}
-	form.Add("speaker", speaker)
-	form.Add("message", message)
-	req.Body = ioutil.NopCloser(strings.NewReader(form.Encode()))
 
 	return req, nil
 }
