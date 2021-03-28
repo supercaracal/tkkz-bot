@@ -63,8 +63,7 @@ func main() {
 		cli.HandleEventsAsync()
 	}
 
-	err = waitUntil(clients, fail, sign)
-	if err != nil {
+	if err := waitUntil(clients, fail, sign); err != nil {
 		cfg.Logger.Err.Fatalln(err)
 	}
 

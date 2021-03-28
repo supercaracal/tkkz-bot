@@ -36,21 +36,25 @@ func (c *LocalClient) RegisterHandler(event string, h func(string) string) {
 // HandleEventsAsync is
 func (c *LocalClient) HandleEventsAsync() {
 	sc := bufio.NewScanner(os.Stdin)
+
 	go func(sc *bufio.Scanner) {
 		fmt.Print("> ")
+
 		for sc.Scan() {
 			input := sc.Text()
 			lowerInput := strings.ToLower(input)
 			if lowerInput == "exit" || lowerInput == "quit" {
 				break
 			}
+
 			if output := c.handleEvent(EventOnMessage, input); output != "" {
 				fmt.Println(output)
 			}
+
 			fmt.Print("> ")
 		}
-		err := c.stopChat()
-		if err != nil {
+
+		if err := c.stopChat(); err != nil {
 			c.handleEvent(EventOnError, err.Error())
 		}
 	}(sc)
@@ -69,9 +73,10 @@ func (c *LocalClient) stopChat() error {
 	if err != nil {
 		return err
 	}
-	err = proc.Signal(os.Interrupt)
-	if err != nil {
+
+	if err := proc.Signal(os.Interrupt); err != nil {
 		return err
 	}
+
 	return nil
 }

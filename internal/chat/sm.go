@@ -104,9 +104,7 @@ func (s *SlackSMClient) handleMessageEvent(ev *slackevents.MessageEvent) {
 		return
 	}
 
-	_, _, err := s.api.PostMessage(ev.Channel,
-		slack.MsgOptionText(reply, false), slack.MsgOptionTS(ev.ThreadTimeStamp))
-	if err != nil {
+	if _, _, err := s.api.PostMessage(ev.Channel, slack.MsgOptionText(reply, false), slack.MsgOptionTS(ev.ThreadTimeStamp)); err != nil {
 		s.handleEvent(EventOnError, fmt.Sprintf("Failed to reply: %s", reply))
 	}
 }
