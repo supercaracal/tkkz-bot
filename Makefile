@@ -42,4 +42,7 @@ run-brain:
 stop-brain:
 	@docker-compose -f docker-compose.development.yml down
 
+redis-aof:
+	@docker-compose exec redis redis-cli bgrewriteaof
+
 .PHONY: all build test lint clean run build-image lint-image run-container clean-image run-brain stop-brain
