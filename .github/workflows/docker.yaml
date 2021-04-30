@@ -11,30 +11,16 @@ env:
   IMAGE_NAME: tkkz-bot
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Lint docker image
-        run: make lint-image
-
-      - name: Build docker image
-        run: make build-image
-
   push:
-    needs: test
-
+    name: Push
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: APP_NAME=$IMAGE_NAME make build-image
 
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin

@@ -1,4 +1,4 @@
-SHELL      := /bin/bash
+SHELL      := /bin/bash -e -u -o pipefail
 APP_NAME   := tkkz-bot
 BRAIN_PORT ?= 3000
 
@@ -8,7 +8,27 @@ build:
 	@go build -ldflags="-s -w" -trimpath -tags timetzdata -o ${APP_NAME}
 
 test:
-	@go test ./...
+	@go clean -testcache
+	@go test -race ./...
+
+bench:
+	@go test -bench=. -benchmem -run=NONE ./...
+
+prof:
+ifndef PKG 
+	@echo 'missing environment variables: PKG'
+	@exit 1
+else
+	@if [ ! -d "./internal/${PKG}" ]; then\
+		echo 'not found: PKG';\
+		exit 1;\
+	fi
+
+	@for t in cpu block mem; do\
+		go test -bench=. -run=NONE -$${t}profile=$${t}.out ./internal/${PKG};\
+		go tool pprof -text -nodecount=10 ./${PKG}.test $${t}.out;\
+	done
+endif
 
 lint:
 	@go vet ./...
