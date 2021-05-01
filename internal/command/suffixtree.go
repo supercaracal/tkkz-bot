@@ -2,27 +2,28 @@ package command
 
 import (
 	"fmt"
+	"sort"
 )
 
 type suffixTreeNode struct {
-	parent   *suffixTreeNode
 	r        rune
+	cnt      int
 	depth    int
-	count    int
-	children map[rune]*suffixTreeNode
+	parent   *suffixTreeNode
+	children []*suffixTreeNode
 }
 
-func newSuffixTreeNode(parent *suffixTreeNode, r rune) *suffixTreeNode {
+func newSuffixTreeNode(r rune, parent *suffixTreeNode) *suffixTreeNode {
 	depth := 0
 	if parent != nil {
 		depth = parent.depth + 1
 	}
 
 	return &suffixTreeNode{
-		parent:   parent,
 		r:        r,
 		depth:    depth,
-		children: map[rune]*suffixTreeNode{},
+		parent:   parent,
+		children: make([]*suffixTreeNode, 0, 2),
 	}
 }
 
@@ -32,70 +33,100 @@ func detectLongestTandemRepeat(s string) (string, int) {
 	}
 
 	runes := []rune(s)
-	root := newSuffixTreeNode(nil, '0')
+	root := newSuffixTreeNode('0', nil)
 	for i := range runes {
 		root.add(runes[i:])
 	}
 
-	// printSuffixTree(root)
+	//root.printSuffixTree()
 
-	node := root.dfs()
-	if node == nil || node.count < 2 {
+	node := root.detect()
+	if node == nil {
 		return "", 0
 	}
 
-	buf := make([]rune, 0, node.depth)
-	for p, n := node, node; p.count == n.count; {
-		buf = append(buf, n.r)
-		p = n
-		n = n.parent
+	subRunes := make([]rune, 0, 8)
+	for n := node; n.parent != nil; n = n.parent {
+		subRunes = append(subRunes, n.r)
+	}
+	for i, j := 0, len(subRunes)-1; i < j; i, j = i+1, j-1 {
+		r := subRunes[i]
+		subRunes[i] = subRunes[j]
+		subRunes[j] = r
 	}
 
-	for i, j := 0, len(buf)-1; i < j; i, j = i+1, j-1 {
-		x := buf[j]
-		buf[j] = buf[i]
-		buf[i] = x
-	}
-
-	return string(buf), node.count
+	return string(subRunes), node.cnt
 }
 
-func (stn *suffixTreeNode) add(runes []rune) {
+func (node *suffixTreeNode) add(runes []rune) {
 	if len(runes) == 0 {
 		return
 	}
 
-	if _, ok := stn.children[runes[0]]; !ok {
-		stn.children[runes[0]] = newSuffixTreeNode(stn, runes[0])
+	var child *suffixTreeNode
+	for _, nd := range node.children {
+		if nd.r == runes[0] {
+			child = nd
+			break
+		}
 	}
 
-	stn.children[runes[0]].count++
+	if child == nil {
+		child = newSuffixTreeNode(runes[0], node)
+		node.children = append(node.children, child)
+	}
+
+	child.cnt++
 
 	if len(runes) > 1 {
-		stn.children[runes[0]].add(runes[1:])
+		child.add(runes[1:])
 	}
 }
 
-func (stn *suffixTreeNode) dfs() *suffixTreeNode {
-	longest := stn
+func (node *suffixTreeNode) detect() *suffixTreeNode {
+	if len(node.children) == 0 {
+		return nil
+	}
 
-	for _, child := range stn.children {
-		if child.count < stn.count {
+	if len(node.children) > 1 {
+		sort.Slice(node.children, node.sort)
+	}
+
+	if node.children[0].cnt < 2 {
+		return node
+	}
+
+	longest := node
+	for _, child := range node.children {
+		if child.cnt < node.cnt {
+			break
+		}
+
+		n := child.detect()
+		if n == nil {
 			continue
 		}
 
-		if node := child.dfs(); node.depth > longest.depth {
-			longest = node
+		if n.depth > longest.depth {
+			longest = n
 		}
+	}
+
+	if longest.depth == 1 {
+		return nil
 	}
 
 	return longest
 }
 
-func printSuffixTree(node *suffixTreeNode) {
+func (node *suffixTreeNode) sort(i, j int) bool {
+	return node.children[i].cnt > node.children[j].cnt
+}
+
+func (node *suffixTreeNode) printSuffixTree() {
 	for _, child := range node.children {
-		fmt.Printf("%s:%d:%d", string([]rune{child.r}), child.count, child.depth)
-		printSuffixTree(child)
+		fmt.Printf("%s:%d", string([]rune{child.r}), child.cnt)
+		child.printSuffixTree()
 		if len(child.children) == 0 {
 			fmt.Println()
 		}
