@@ -92,8 +92,7 @@ func (node *suffixTreeNode) detect() *suffixTreeNode {
 
 	longest := node
 	for _, child := range node.children {
-		//if child.cnt < node.cnt {
-		if child.cnt < 1 {
+		if child.cnt < 1 || (child.cnt < node.cnt && node.depth == 1) {
 			continue
 		}
 

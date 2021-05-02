@@ -10,17 +10,28 @@ func TestDetectLongestTandemRepeat(t *testing.T) {
 		substr string
 		count  int
 	}{
+		{"", "", 0},
 		{"AGCTU", "", 0},
 		{"AGCTUAGCTU", "AGCTU", 2},
-		{"AGCTUUTCGAAGCTU", "", 0},
-		{"AGCTUUTCGAAGCTUAGCTU", "AGCTU", 2},
-		//{"GGGGGAGCTUAGCTUGGGGG", "AGCTU", 2},
-		{"AAAAAAAAAAAAAA", "", 0},
-		{"ああああああああ", "", 0},
+		{"AGCTUGGGGGAGCTU", "", 0},
+		{"GGGGGAGCTUAGCTU", "AGCTU", 2},
+		{"AGCTUAGCTUGGGGG", "AGCTU", 2},
+		{"GGGGGAGCTUAGCTUGGGGG", "AGCTU", 2},
+		{"AAAAAAAAAA", "", 0},
+		{"あああああああ", "", 0},
 		{"ひねもすのたりのたりかな", "のたり", 2},
 		//{"オラオラオラオラオラ", "オラ", 5},
-		//{"無駄無駄ああああ", "無駄", 2},
-		{"", "", 0},
+		//{"無駄無駄無駄無駄無駄", "無駄", 5},
+		{"無駄あ無駄", "", 0},
+		{"無駄無駄あ", "無駄", 2},
+		{"無駄無駄ああ", "無駄", 2},
+		{"無駄無駄あああ", "無駄", 2},
+		{"無駄無駄ああああ", "無駄", 2},
+		{"あ無駄無駄", "無駄", 2},
+		{"ああ無駄無駄", "無駄", 2},
+		{"あああ無駄無駄", "無駄", 2},
+		{"ああああ無駄無駄", "無駄", 2},
+		{"ああああ無駄無駄ああああ", "無駄", 2},
 	}
 
 	for n, c := range cases {
