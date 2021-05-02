@@ -12,14 +12,15 @@ func TestDetectLongestTandemRepeat(t *testing.T) {
 	}{
 		{"AGCTU", "", 0},
 		{"AGCTUAGCTU", "AGCTU", 2},
-		//{"AGCTUUTCGAAGCTU", "", 0},
-		//{"AGCTUUTCGAAGCTUAGCTU", "AGCTU", 2},
-		//		{"AAAAAAAAAAAAAA", "A", 14},
-		//		{"ああああああああ", "あ", 8},
-		//		{"ひねもすのたりのたりかな", "のたり", 2},
-		//		{"オラオラオラオラオラ", "オラ", 5},
-		//		{"無駄無駄ああああ", "無駄", 2},
-		//		{"", "", 0},
+		{"AGCTUUTCGAAGCTU", "", 0},
+		{"AGCTUUTCGAAGCTUAGCTU", "AGCTU", 2},
+		//{"GGGGGAGCTUAGCTUGGGGG", "AGCTU", 2},
+		{"AAAAAAAAAAAAAA", "", 0},
+		{"ああああああああ", "", 0},
+		{"ひねもすのたりのたりかな", "のたり", 2},
+		//{"オラオラオラオラオラ", "オラ", 5},
+		//{"無駄無駄ああああ", "無駄", 2},
+		{"", "", 0},
 	}
 
 	for n, c := range cases {
