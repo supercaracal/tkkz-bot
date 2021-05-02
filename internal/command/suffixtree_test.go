@@ -12,8 +12,8 @@ func TestDetectLongestTandemRepeat(t *testing.T) {
 	}{
 		{"AGCTU", "", 0},
 		{"AGCTUAGCTU", "AGCTU", 2},
-		{"AGCTUUTCGAAGCTU", "", 0},
-		{"AGCTUUTCGAAGCTUAGCTU", "AGCTU", 2},
+		//{"AGCTUUTCGAAGCTU", "", 0},
+		//{"AGCTUUTCGAAGCTUAGCTU", "AGCTU", 2},
 		//		{"AAAAAAAAAAAAAA", "A", 14},
 		//		{"ああああああああ", "あ", 8},
 		//		{"ひねもすのたりのたりかな", "のたり", 2},

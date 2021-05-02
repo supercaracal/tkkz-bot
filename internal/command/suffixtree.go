@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"sort"
+	"sync"
 )
 
 type suffixTreeNode struct {
@@ -13,49 +14,24 @@ type suffixTreeNode struct {
 	children []*suffixTreeNode
 }
 
-func newSuffixTreeNode(r rune, parent *suffixTreeNode) *suffixTreeNode {
-	depth := 0
-	if parent != nil {
-		depth = parent.depth + 1
+var (
+	suffixTreeNodePool = sync.Pool{
+		New: func() interface{} {
+			return newSuffixTreeNode()
+		},
 	}
 
+	runesPool = sync.Pool{
+		New: func() interface{} {
+			return make([]rune, 0, 2)
+		},
+	}
+)
+
+func newSuffixTreeNode() *suffixTreeNode {
 	return &suffixTreeNode{
-		r:        r,
-		depth:    depth,
-		parent:   parent,
 		children: make([]*suffixTreeNode, 0, 2),
 	}
-}
-
-func detectLongestTandemRepeat(s string) (string, int) {
-	if s == "" {
-		return "", 0
-	}
-
-	runes := []rune(s)
-	root := newSuffixTreeNode('0', nil)
-	for i := range runes {
-		root.add(runes[i:])
-	}
-
-	//root.printSuffixTree()
-
-	node := root.detect()
-	if node == nil {
-		return "", 0
-	}
-
-	subRunes := make([]rune, 0, 8)
-	for n := node; n.parent != nil; n = n.parent {
-		subRunes = append(subRunes, n.r)
-	}
-	for i, j := 0, len(subRunes)-1; i < j; i, j = i+1, j-1 {
-		r := subRunes[i]
-		subRunes[i] = subRunes[j]
-		subRunes[j] = r
-	}
-
-	return string(subRunes), node.cnt
 }
 
 func (node *suffixTreeNode) add(runes []rune) {
@@ -72,7 +48,10 @@ func (node *suffixTreeNode) add(runes []rune) {
 	}
 
 	if child == nil {
-		child = newSuffixTreeNode(runes[0], node)
+		child = suffixTreeNodePool.Get().(*suffixTreeNode)
+		child.r = runes[0]
+		child.depth = node.depth + 1
+		child.parent = node
 		node.children = append(node.children, child)
 	}
 
@@ -112,15 +91,25 @@ func (node *suffixTreeNode) detect() *suffixTreeNode {
 		}
 	}
 
-	if longest.depth == 1 {
-		return nil
-	}
-
 	return longest
 }
 
 func (node *suffixTreeNode) sort(i, j int) bool {
 	return node.children[i].cnt > node.children[j].cnt
+}
+
+func (node *suffixTreeNode) reset() {
+	defer suffixTreeNodePool.Put(node)
+
+	for _, child := range node.children {
+		child.reset()
+	}
+
+	node.r = '0'
+	node.cnt = 0
+	node.depth = 0
+	node.parent = nil
+	node.children = node.children[:0]
 }
 
 func (node *suffixTreeNode) printSuffixTree() {
@@ -131,4 +120,45 @@ func (node *suffixTreeNode) printSuffixTree() {
 			fmt.Println()
 		}
 	}
+}
+
+func detectLongestTandemRepeat(s string) (string, int) {
+	if s == "" {
+		return "", 0
+	}
+
+	root := suffixTreeNodePool.Get().(*suffixTreeNode)
+	defer root.reset()
+
+	runes := runesPool.Get().([]rune)
+	defer func(r []rune) { r = r[:0]; runesPool.Put(r) }(runes)
+
+	for _, r := range s {
+		runes = append(runes, r)
+	}
+
+	for i := range runes {
+		root.add(runes[i:])
+	}
+
+	//root.printSuffixTree()
+
+	node := root.detect()
+	if node == nil {
+		return "", 0
+	}
+
+	subRunes := runesPool.Get().([]rune)
+	defer func(r []rune) { r = r[:0]; runesPool.Put(r) }(subRunes)
+
+	for n := node; n.parent != nil; n = n.parent {
+		subRunes = append(subRunes, n.r)
+	}
+	for i, j := 0, len(subRunes)-1; i < j; i, j = i+1, j-1 {
+		r := subRunes[i]
+		subRunes[i] = subRunes[j]
+		subRunes[j] = r
+	}
+
+	return string(subRunes), node.cnt
 }
