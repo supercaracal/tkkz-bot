@@ -136,7 +136,7 @@ func (node *suffixTreeNode) count(pattern []rune) (cnt int) {
 	return
 }
 
-func detectLongestTandemRepeat(s string) (string, int) {
+func detectLongestTandemRepeat1(s string) (string, int) {
 	if s == "" {
 		return "", 0
 	}
@@ -185,4 +185,47 @@ func detectLongestTandemRepeat(s string) (string, int) {
 	}
 
 	return "", 0
+}
+
+func detectLongestTandemRepeat2(s string) (string, int) {
+	if s == "" {
+		return "", 0
+	}
+
+	runes := runesPool.Get().([]rune)
+	defer func(r []rune) { r = r[:0]; runesPool.Put(r) }(runes)
+
+	for _, r := range s {
+		runes = append(runes, r)
+	}
+
+	var (
+		first, size int
+	)
+
+	for i, tmpFirst, half := 1, len(runes), len(runes)/2; i <= half; i++ {
+		for j := 0; i+j < len(runes); j++ {
+			if runes[i+j] != runes[j] {
+				if j-tmpFirst > size {
+					first = tmpFirst
+					size = j - tmpFirst + i
+					//fmt.Printf("max updated! first=%d size=%d\n", first, size)
+				}
+				tmpFirst = len(runes)
+				//fmt.Println("couting stopped!")
+			} else {
+				if tmpFirst == len(runes) {
+					tmpFirst = j
+					//fmt.Println("couting started!")
+				}
+			}
+			//fmt.Printf("%d: %s\t%d: %s\n", i+j, string([]rune{runes[i+j]}), j, string([]rune{runes[j]}))
+		}
+		if len(runes)-i-tmpFirst > size {
+			first = tmpFirst
+			size = len(runes) - tmpFirst
+		}
+	}
+
+	return string(runes[first : first+size]), size
 }

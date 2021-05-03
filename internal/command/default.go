@@ -105,8 +105,8 @@ func trimReply(text string) string {
 }
 
 func personalizeReply(text string) string {
-	if s, n := detectLongestTandemRepeat(text); utf8.RuneCountInString(s) > 2 && n > 3 {
-		text = strings.ReplaceAll(text, strings.Repeat(s, n), fmt.Sprintf("%s*%d", s, n))
+	if s, n := detectLongestTandemRepeat1(text); utf8.RuneCountInString(s) > 2 && n > 3 {
+		text = strings.ReplaceAll(text, strings.Repeat(s, n), fmt.Sprintf("%s %d", s, n))
 	}
 
 	return text + ending
