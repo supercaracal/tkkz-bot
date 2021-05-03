@@ -136,6 +136,7 @@ func (node *suffixTreeNode) count(pattern []rune) (cnt int) {
 	return
 }
 
+// using suffix tree
 func detectLongestTandemRepeat1(s string) (string, int) {
 	if s == "" {
 		return "", 0
@@ -187,6 +188,7 @@ func detectLongestTandemRepeat1(s string) (string, int) {
 	return "", 0
 }
 
+// sliding and comparing
 func detectLongestTandemRepeat2(s string) (string, int) {
 	if s == "" {
 		return "", 0
@@ -200,32 +202,54 @@ func detectLongestTandemRepeat2(s string) (string, int) {
 	}
 
 	var (
+		// ex) fooabcabcabcbar
+		//        ^^^^^^^^^
+		// first=3, size=3
 		first, size int
 	)
 
-	for i, tmpFirst, half := 1, len(runes), len(runes)/2; i <= half; i++ {
-		for j := 0; i+j < len(runes); j++ {
+	for i, j, tmp := 1, 0, len(runes); i <= len(runes)/2; i++ {
+		for j = 0; i+j < len(runes); j++ {
 			if runes[i+j] != runes[j] {
-				if j-tmpFirst > size {
-					first = tmpFirst
-					size = j - tmpFirst + i
-					//fmt.Printf("max updated! first=%d size=%d\n", first, size)
+				if j-tmp > size {
+					first = tmp
+					size = j - tmp
+					//fmt.Printf("1: max updated: first=%d size=%d: %s\n", first, size, s)
 				}
-				tmpFirst = len(runes)
-				//fmt.Println("couting stopped!")
+				tmp = len(runes)
 			} else {
-				if tmpFirst == len(runes) {
-					tmpFirst = j
-					//fmt.Println("couting started!")
+				if tmp == len(runes) {
+					tmp = j
 				}
 			}
-			//fmt.Printf("%d: %s\t%d: %s\n", i+j, string([]rune{runes[i+j]}), j, string([]rune{runes[j]}))
+			//fmt.Printf("%d: %s, %d: %s\n", i+j, string([]rune{runes[i+j]}), j, string([]rune{runes[j]}))
 		}
-		if len(runes)-i-tmpFirst > size {
-			first = tmpFirst
-			size = len(runes) - tmpFirst
+		if j-tmp > size {
+			first = tmp
+			size = j - tmp
+			//fmt.Printf("2: max updated: first=%d size=%d: %s\n", first, size, s)
 		}
 	}
 
-	return string(runes[first : first+size]), size
+	mono := true
+	for i := first + 1; i < first+size; i++ {
+		if runes[i-1] != runes[i] {
+			mono = false
+			break
+		}
+	}
+
+	if mono || size < 2 {
+		return "", 0
+	}
+
+	return string(runes[first : first+size]), func() (cnt int) {
+		for i := first; i < len(runes) && runes[i] == runes[first+((i-first)%size)]; i++ {
+			//fmt.Printf("%d: %s, %d: %s\n", i, string([]rune{runes[i]}), first+((i-first)%size), string([]rune{runes[first+((i-first)%size)]}))
+			if (i-first+1)%size == 0 {
+				cnt++
+			}
+		}
+		return
+	}()
 }
