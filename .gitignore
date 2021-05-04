@@ -1,2 +1,5 @@
 .env
-tkkz-bot
+/tkkz-bot
+/main
+/*.test
+/*.out
