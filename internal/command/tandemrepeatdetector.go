@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 )
 
@@ -252,4 +253,47 @@ func detectLongestTandemRepeat2(s string) (string, int) {
 		}
 		return
 	}()
+}
+
+func detectLongestTandemRepeat3(s string) (string, int) {
+	if s == "" {
+		return "", 0
+	}
+
+	runes := runesPool.Get().([]rune)
+	defer func(r []rune) { r = r[:0]; runesPool.Put(r) }(runes)
+
+	for _, r := range s {
+		runes = append(runes, r)
+	}
+
+	l := len(runes)
+	if l < 3 {
+		return "", 0
+	}
+
+	var (
+		w   []rune
+		cnt int
+	)
+
+	for i, end := 1, l-1; i < l/2; i++ {
+		start := end - i
+		w = runes[start:end]
+		c := 0
+		for j := 1; j*i <= l; j++ {
+			tandem := strings.Repeat(s, j)
+			if !strings.HasSuffix(s, tandem) {
+				c = j - 1
+				break
+			}
+		}
+		if c > cnt {
+			cnt = c
+		} else {
+			break
+		}
+	}
+
+	return string(w), cnt
 }

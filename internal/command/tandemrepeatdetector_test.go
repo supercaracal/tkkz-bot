@@ -77,6 +77,15 @@ func TestDetectLongestTandemRepeat2(t *testing.T) {
 	}
 }
 
+func TestDetectLongestTandemRepeat3(t *testing.T) {
+	for n, c := range casesForTest {
+		if substr, count := detectLongestTandemRepeat3(c.s); substr != c.substr || count != c.count {
+			t.Errorf("%d: %s: substr: want=%s, got=%s: count: want=%d, got=%d",
+				n+1, c.s, c.substr, substr, c.count, count)
+		}
+	}
+}
+
 func BenchmarkDetectLongestTandemRepeat1(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -88,5 +97,12 @@ func BenchmarkDetectLongestTandemRepeat2(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = detectLongestTandemRepeat2(strForBench)
+	}
+}
+
+func BenchmarkDetectLongestTandemRepeat3(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = detectLongestTandemRepeat3(strForBench)
 	}
 }
