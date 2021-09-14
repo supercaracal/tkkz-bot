@@ -54,6 +54,10 @@ func (c *LocalClient) HandleEventsAsync() {
 			fmt.Print("> ")
 		}
 
+		if err := sc.Err(); err != nil {
+			c.handleEvent(EventOnError, err.Error())
+		}
+
 		if err := c.stopChat(); err != nil {
 			c.handleEvent(EventOnError, err.Error())
 		}
