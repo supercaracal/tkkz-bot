@@ -1,3 +1,4 @@
+MAKEFLAGS  += --warn-undefined-variables
 SHELL      := /bin/bash -euo pipefail
 APP_NAME   := tkkz-bot
 BRAIN_PORT ?= 3000
