@@ -7,14 +7,17 @@ on:
   pull_request:
     branches:
       - "*"
+defaults:
+  run:
+    shell: bash
 jobs:
-  test:
-    name: Test
+  code:
+    name: Code
     timeout-minutes: 5
     strategy:
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
-        go-ver: ["1.16"]
+        go-ver: ["1.17"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out code
@@ -25,25 +28,39 @@ jobs:
         with:
           go-version: ${{ matrix.go-ver }}
 
-      - name: Add $GOPATH/bin to $PATH
-        run: echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Check out Go cache paths
+        id: go-cache-paths
+        run: |
+          echo "::set-output name=go-cache::$(go env GOCACHE)"
+          echo "::set-output name=go-mod-cache::$(go env GOMODCACHE)"
 
-      - name: Get dependencies
-        run: go get golang.org/x/lint/golint
+      - name: Cache GOCACHE
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-cache }}
+          key: ${{ runner.os }}-go-cache-${{ hashFiles('*.go', '**/*.go') }}
+
+      - name: Cache GOMODCACHE
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod-cache }}
+          key: ${{ runner.os }}-go-mod-cache-${{ hashFiles('go.sum', '**/go.sum') }}
 
       - name: Build
         run: make build
 
-      - name: Test
-        run: make test
-
       - name: Lint
         run: make lint
 
+      - name: Test
+        run: make test
+  image:
+    name: Image
+    timeout-minutes: 15
+    runs-on: "ubuntu-latest"
+    steps:
       - name: Lint docker image
         run: make lint-image
-        if: runner.os == 'Linux'
 
       - name: Build docker image
         run: make build-image
-        if: runner.os == 'Linux'

@@ -1,34 +1,20 @@
 ---
 name: Docker
-
 on:
   push:
     branches:
       - "master"
     tags:
       - "v*"
-env:
-  IMAGE_NAME: tkkz-bot
-
+defaults:
+  run:
+    shell: bash
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Lint docker image
-        run: make lint-image
-
-      - name: Build docker image
-        run: make build-image
-
   push:
-    needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-
+    env:
+      IMAGE_NAME: tkkz-bot
     steps:
       - name: Check out code
         uses: actions/checkout@v2

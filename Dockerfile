@@ -1,14 +1,10 @@
-FROM golang:1.16 as builder
-
+FROM golang:1.17 as builder
 WORKDIR /go/src/app
 COPY . .
+RUN make build GOOS=linux GOARCH=amd64 CGO_ENABLED=0
 
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -trimpath -tags timetzdata -o bot
-
-FROM alpine:3.12
-
+# @see https://console.cloud.google.com/gcr/images/distroless/GLOBAL
+FROM gcr.io/distroless/static-debian11:latest-amd64
 WORKDIR /opt
-
-COPY --from=builder /go/src/app/bot ./bot
-
-CMD ["/opt/bot"]
+COPY --from=builder /go/src/app/tkkz-bot ./bot
+ENTRYPOINT ["/opt/bot"]

@@ -1,2 +1,4 @@
-.env
-tkkz-bot
+/.env
+/tkkz-bot
+/*.test
+/*.out
